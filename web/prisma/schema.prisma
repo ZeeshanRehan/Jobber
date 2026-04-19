@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model Squad {
+  id String @id  @default(uuid())
+  name String 
+  joiningCode String @unique
+  createdAt DateTime  @default(now())
+  job Job[]
+  members SquadMembership[]
+}
+
+model Person {
+  id String @id  @default(uuid())
+  name String
+  createdAt DateTime @default(now())
+  job Job[]
+  squads SquadMembership[]
+}
+
+model Job{
+  id String @id @default(uuid())
+  URL String
+  company String?
+  position String?
+  createdAt DateTime @default(now())
+  pushedBy String 
+  person Person @relation(fields: [pushedBy], references: [id])
+  squad String
+  inSquad Squad @relation(fields: [squad], references: [id])
+}
+
+model SquadMembership{
+  personId String @default(uuid())
+  squadId String @default(uuid())
+  person Person @relation(fields: [personId], references: [id])
+  squad Squad @relation(fields: [squadId], references: [id])
+
+  @@id([personId,squadId])
+}
