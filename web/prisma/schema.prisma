@@ -38,6 +38,8 @@ model Job{
   person Person @relation(fields: [pushedBy], references: [id])
   squad String
   inSquad Squad @relation(fields: [squad], references: [id])
+
+  @@unique([URL, squad])
 }
 
 model SquadMembership{
