@@ -24,7 +24,6 @@ model Person {
   id String @id  @default(uuid())
   name String
   createdAt DateTime @default(now())
-  job Job[]
   squads SquadMembership[]
 }
 
@@ -35,7 +34,6 @@ model Job{
   position String?
   createdAt DateTime @default(now())
   pushedBy String 
-  person Person @relation(fields: [pushedBy], references: [id])
   squad String
   inSquad Squad @relation(fields: [squad], references: [id])
 

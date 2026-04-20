@@ -66,3 +66,20 @@ export async function POST(req: NextRequest) {
 
 
 //Route to GET the jobs in a squad
+export async function GET(req:NextRequest) {
+   const squadCode = req.nextUrl.searchParams.get('squadCode') 
+
+   if (!squadCode) return NextResponse.json({error: "please enter squad code!"}, {status: 401});
+   
+   const jobs = await prisma.job.findMany({
+    where:{ 
+        inSquad : {joiningCode : squadCode},
+        createdAt: { gte : new Date (Date.now() - 48 * 60 * 60 * 1000) }
+        }
+   })
+
+    return NextResponse.json(jobs, {status : 200})
+}
+
+
+
