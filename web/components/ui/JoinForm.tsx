@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
@@ -18,13 +18,32 @@ interface Job {
 }
 
 export default function JoinForm() {
-  const [step, setStep] = useState<Step>('join')
-  const [squadCode, setSquadCode] = useState('')
-  const [name, setName] = useState('')
-  const [avatar, setAvatar] = useState(AVATARS[0])
+  // initialize from localStorage so state survives refresh
+const [squadCode, setSquadCode] = useState(() => 
+  typeof window !== 'undefined' ? localStorage.getItem('squadCode') ?? '' : ''
+)
+const [name, setName] = useState(() => 
+  typeof window !== 'undefined' ? localStorage.getItem('personName') ?? '' : ''
+)
+const [avatar, setAvatar] = useState(() => 
+  typeof window !== 'undefined' ? localStorage.getItem('avatar') ?? AVATARS[0] : AVATARS[0]
+)
+const [step, setStep] = useState<Step>(() => 
+  typeof window !== 'undefined' && localStorage.getItem('squadCode') ? 'board' : 'join'
+)
+
   const [jobs, setJobs] = useState<Job[]>([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // fetch jobs whenever we land on the board — handles refresh and initial load
+  useEffect(() => {
+    if (step === 'board' && squadCode) {
+      fetch(`/api/jobs?squadCode=${squadCode}`)
+        .then(r => r.json())
+        .then(setJobs)
+    }
+  }, [step, squadCode])
 
   async function handleJoin() {
     if (!squadCode.trim()) return
@@ -46,6 +65,10 @@ export default function JoinForm() {
   async function handleProfile() {
     if (!name.trim()) return
     setLoading(true)
+
+    localStorage.setItem('squadCode', squadCode)
+    localStorage.setItem('personName', name)
+    localStorage.setItem('avatar', avatar)
 
     const res = await fetch(`/api/jobs?squadCode=${squadCode.trim()}`)
     const data = await res.json()
@@ -69,7 +92,7 @@ export default function JoinForm() {
   if (step === 'join') return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-8">
       <div className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl p-8 w-full max-w-[380px]">
-        <p className="text-[22px] font-medium text-[#f0f0f0] mb-1">Jobber</p>
+        <p className="text-[22px] font-medium text-[#f0f0f0] mb-1">jobber</p>
         <p className="text-[13px] text-[#555] mb-6">share jobs with your squad</p>
         <p className="text-[11px] text-[#666] uppercase tracking-widest mb-1.5">squad code</p>
         <Input

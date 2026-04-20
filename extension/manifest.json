@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Jobber",
+  "version": "1.0",
+  "description": "Share jobs with your squad in one click",
+  "permissions": ["activeTab", "storage"],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.linkedin.com/jobs/*",
+        "*://jobs.lever.co/*",
+        "*://boards.greenhouse.io/*",
+        "*://jobs.ashbyhq.com/*",
+        "*://www.indeed.com/viewjob*",
+        "*://jobs.workday.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
