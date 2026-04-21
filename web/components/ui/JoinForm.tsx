@@ -18,23 +18,31 @@ interface Job {
 }
 
 export default function JoinForm() {
-  // initialize from localStorage so state survives refresh
-const [squadCode, setSquadCode] = useState(() => 
-  typeof window !== 'undefined' ? localStorage.getItem('squadCode') ?? '' : ''
-)
-const [name, setName] = useState(() => 
-  typeof window !== 'undefined' ? localStorage.getItem('personName') ?? '' : ''
-)
-const [avatar, setAvatar] = useState(() => 
-  typeof window !== 'undefined' ? localStorage.getItem('avatar') ?? AVATARS[0] : AVATARS[0]
-)
-const [step, setStep] = useState<Step>(() => 
-  typeof window !== 'undefined' && localStorage.getItem('squadCode') ? 'board' : 'join'
-)
 
+  const [step, setStep] = useState<Step>('join')
+  const [squadCode, setSquadCode] = useState('')
+  const [name, setName] = useState('')
+  const [avatar, setAvatar] = useState(AVATARS[0]) 
   const [jobs, setJobs] = useState<Job[]>([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+// after mount, read localStorage and jump to correct step
+useEffect(() => {
+  const saved = localStorage.getItem('squadCode')
+  const savedName = localStorage.getItem('personName')
+  const savedAvatar = localStorage.getItem('avatar')
+  if (saved) {
+    setSquadCode(saved)
+    setName(savedName ?? '')
+    setAvatar(savedAvatar ?? AVATARS[0])
+    setStep('board')
+  }
+}, [])
+
+
+
+
 
   // fetch jobs whenever we land on the board — handles refresh and initial load
   useEffect(() => {
@@ -168,6 +176,16 @@ const [step, setStep] = useState<Step>(() =>
           <p className="text-[13px] text-[#555] mt-1 mb-4">
             {jobs.length} jobs shared · squad: {squadCode}
           </p>
+                      <p 
+className="text-[24 px] text-[#555] cursor-pointer hover:text-[#999] mt-2 mb-2"
+  onClick={() => {
+    localStorage.clear()
+    setStep('join')
+    setJobs([])
+  }}
+>
+  leave squad
+</p>
           <div className="flex border-b border-[#1e1e1e]">
             <p className="text-[12px] text-[#e0e0e0] pb-2 mr-6 border-b-[1.5px] border-[#e0e0e0]">squad pool</p>
             <p className="text-[12px] text-[#444] pb-2 cursor-pointer">my shares</p>

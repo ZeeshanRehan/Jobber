@@ -7,12 +7,12 @@
   "content_scripts": [
     {
       "matches": [
-        "*://www.linkedin.com/jobs/*",
-        "*://jobs.lever.co/*",
-        "*://boards.greenhouse.io/*",
-        "*://jobs.ashbyhq.com/*",
-        "*://www.indeed.com/viewjob*",
-        "*://jobs.workday.com/*"
+              "*://*.myworkdayjobs.com/*",
+              "*://*.greenhouse.io/*",
+              "*://*.lever.co/*",
+              "*://*.ashbyhq.com/*",
+              "*://*.rippling.com/*",
+              "*://*.jobvite.com/*"
       ],
       "js": ["content.js"]
     }

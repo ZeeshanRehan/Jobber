@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { corsHeaders } from '../cors'
+
+
+// add OPTIONS handler for preflight requests
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders() })
+}
 
 
 async function scrapeJob(url: string) {
@@ -18,10 +25,10 @@ async function scrapeJob(url: string) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  
+   console.log('POST /api/jobs body:', body)
   // do stuff with prisma
     if(!body.URL || !body.person || !body.joiningCode){
-        return NextResponse.json({error: "Please enter all fields!"}, {status:401})
+        return NextResponse.json({error: "Please enter all fields!"}, {status:401, headers: corsHeaders()})
     }
 
     const squadCode = body.joiningCode
@@ -33,7 +40,7 @@ export async function POST(req: NextRequest) {
         select : {id : true}
     })
 
-    if (!squad) return NextResponse.json({error : "Incorrect code!"}, {status:401})
+    if (!squad) return NextResponse.json({error : "Incorrect code!"}, {status:401, headers: corsHeaders()})
 
     
 
@@ -60,7 +67,7 @@ export async function POST(req: NextRequest) {
     })
 
 
-  return NextResponse.json(job, { status: 201 })
+  return NextResponse.json(job, { status: 201, headers: corsHeaders() })
 }
 
 
@@ -78,7 +85,7 @@ export async function GET(req:NextRequest) {
         }
    })
 
-    return NextResponse.json(jobs, {status : 200})
+    return NextResponse.json(jobs, {status : 200, headers : corsHeaders()})
 }
 
 

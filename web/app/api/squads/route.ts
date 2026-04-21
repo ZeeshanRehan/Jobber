@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { nanoid } from 'nanoid'
+import { customAlphabet } from 'nanoid'
+import { corsHeaders } from '../cors'
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders() })
+}
+
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
@@ -9,8 +15,10 @@ export async function POST(req: NextRequest) {
  if(!body.name){
     return NextResponse.json({error: "Name is required!"}, {status: 400})
  }
- 
- const joiningCode = nanoid(6);
+
+ const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8)
+
+ const joiningCode = nanoid();
 
  const squad = await prisma.squad.create({
     data:{
@@ -19,5 +27,5 @@ export async function POST(req: NextRequest) {
     }
  })
 
-  return NextResponse.json(squad, { status: 201 })
+  return NextResponse.json(squad, { status: 201 ,headers: corsHeaders()})
 }
