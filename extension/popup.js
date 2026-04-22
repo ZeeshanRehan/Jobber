@@ -4,7 +4,7 @@
 
 // ── Config ────────────────────────────────────────────────────────────────
 // Change this to your Vercel URL when deployed
-const API_URL = 'http://localhost:3000'
+const API_URL = 'https://jobber-neon.vercel.app/'
 
 // ── DOM refs ──────────────────────────────────────────────────────────────
 const setupEl      = document.getElementById('setup')
